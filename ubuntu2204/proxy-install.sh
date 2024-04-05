@@ -145,12 +145,12 @@ request_header_access Cookie allow all
 request_header_access All deny all
 EOF
 
-    systemctl restart squid
-    systemctl enable squid
+    systemctl restart squid > /dev/null 2>&1
+    systemctl enable squid > /dev/null 2>&1
     echo "Squid Proxy installed successfully."
 fi
 
 # Marketing content
 echo -e "\033[1;36mThank you for using Netbay Proxy installer.\033[0m"
 echo "Check out Netbay Hosting Solution for premium services and purchase Netbay Proxies for high-speed browsing."
-echo "\033[1;36mYou can add proxy users simply by running 'squid-add-user' and remove Squid completely by running 'squid-uninstall'.\033[0m"
+echo -e "\033[1;36mYou can add proxy users simply by running 'squid-add-user' and remove Squid completely by running 'squid-uninstall'.\033[0m"
