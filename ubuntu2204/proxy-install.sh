@@ -25,36 +25,35 @@ echo -e "\033[1;36m
 Website: https:netbay.in
 
 \033[0m"
-echo 'ok1'
+
 # Check if running as root
 if [ "$(id -u)" -ne 0 ]; then
     echo "Please run this script as root."
     exit 1
 fi
-echo 'ok2'
+
 
 # Check if Squid Proxy is already installed
 # Check if Squid Proxy is already installed
 if command -v squid >/dev/null 2>&1 || [ -x /usr/sbin/squid ]; then
-    echo 'ok3'
+    
     echo 'Squid Proxy is already installed. Removing existing installation...'
 
     # Stop the Squid service
-    systemctl stop squid
+    systemctl stop squid > /dev/null 2>&1
 
     # Disable Squid service to prevent it from starting on boot
-    systemctl disable squid
+    systemctl disable squid > /dev/null 2>&1
 
     # Remove Squid package
-    apt remove --purge squid -y
+    apt remove --purge squid -y > /dev/null 2>&1
 
     # Remove Squid configuration directory
-    rm -rf /etc/squid
+    rm -rf /etc/squid > /dev/null 2>&1
 
     echo "Squid Proxy uninstalled successfully."
 fi
 
-echo 'ok4'
 
 
 
