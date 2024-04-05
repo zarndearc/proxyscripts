@@ -26,27 +26,26 @@ Website: https://netbay.in
 
 \033[0m"
 
-# Check if running as root
-if [ "$(id -u)" -ne 0 ]; then
-    echo "Please run this script as root."
-    exit 1
+if [ `whoami` != root ]; then
+	echo "ERROR: You need to run the script as user root or add sudo before command."
+	exit 1
 fi
 
-# Check if Squid Proxy is already installed
+
 if command -v squid >/dev/null 2>&1 || [ -x /usr/sbin/squid ]; then
     echo -e '\nSquid Proxy is already installed. Removing existing installation...\n'
-    # Stop the Squid service
+    
     systemctl stop squid > /dev/null 2>&1
-    # Disable Squid service to prevent it from starting on boot
+    
     systemctl disable squid > /dev/null 2>&1
-    # Remove Squid package
+
     yum remove squid -y > /dev/null 2>&1
-    # Remove Squid configuration directory
+    
     rm -rf /etc/squid > /dev/null 2>&1
     echo -e "\nSquid Proxy uninstalled successfully.\n"
 fi
 
-# Installation
+
 if [ ! -x "$(command -v squid)" ]; then
     echo "Installing Squid Proxy..."
     yum install -y squid httpd-tools > /dev/null 2>&1
@@ -54,11 +53,11 @@ if [ ! -x "$(command -v squid)" ]; then
     mv /etc/squid/squid.conf /etc/squid/squid.conf.bak
     touch /etc/squid/blacklist.acl
 
-    # Download squid-add-user script
+    
     wget -q --no-check-certificate -O /usr/local/bin/squid-add-user https://raw.githubusercontent.com/zarndearc/proxyscripts/main/centos/squid-add-user.sh > /dev/null 2>&1
     chmod 755 /usr/local/bin/squid-add-user
 
-    # Download squid-uninstall script
+    
     wget -q --no-check-certificate -O /usr/local/bin/squid-uninstall https://raw.githubusercontent.com/zarndearc/proxyscripts/main/centos/squid-uninstall.sh > /dev/null 2>&1
     chmod 755 /usr/local/bin/squid-uninstall
 
@@ -137,7 +136,6 @@ EOF
     echo -e "\n\n\nSquid Proxy installed successfully.\n\n"
 fi
 
-# Marketing content
 echo -e "\033[1;36mThank you for using Netbay Proxy installer.\033[0m"
 echo -e "\nCheck out Netbay Hosting Solution for premium services and purchase Netbay Proxies for high-speed browsing.\n"
 echo -e "\033[1;36mYou can add proxy users simply by running 'squid-add-user' and remove Squid completely by running 'squid-uninstall'.\033[0m"
