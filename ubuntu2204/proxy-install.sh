@@ -37,7 +37,7 @@ fi
 # Check if Squid Proxy is already installed
 if command -v squid >/dev/null 2>&1 || [ -x /usr/sbin/squid ]; then
     
-    echo 'Squid Proxy is already installed. Removing existing installation...'
+    echo '\nSquid Proxy is already installed. Removing existing installation...\n'
 
     # Stop the Squid service
     systemctl stop squid > /dev/null 2>&1
@@ -51,7 +51,7 @@ if command -v squid >/dev/null 2>&1 || [ -x /usr/sbin/squid ]; then
     # Remove Squid configuration directory
     rm -rf /etc/squid > /dev/null 2>&1
 
-    echo "Squid Proxy uninstalled successfully."
+    echo "\nSquid Proxy uninstalled successfully.\n"
 fi
 
 
@@ -147,10 +147,10 @@ EOF
 
     systemctl restart squid > /dev/null 2>&1
     systemctl enable squid > /dev/null 2>&1
-    echo "Squid Proxy installed successfully."
+    echo "\n\n\nSquid Proxy installed successfully.\n\n"
 fi
 
 # Marketing content
 echo -e "\033[1;36mThank you for using Netbay Proxy installer.\033[0m"
-echo "Check out Netbay Hosting Solution for premium services and purchase Netbay Proxies for high-speed browsing."
+echo "\nCheck out Netbay Hosting Solution for premium services and purchase Netbay Proxies for high-speed browsing.\n"
 echo -e "\033[1;36mYou can add proxy users simply by running 'squid-add-user' and remove Squid completely by running 'squid-uninstall'.\033[0m"
