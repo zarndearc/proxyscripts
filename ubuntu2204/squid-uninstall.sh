@@ -1,11 +1,11 @@
 #!/bin/bash
 echo -e "\033[1;36mUninstalling Squid Proxy... \033[0m"
 # Stop Squid service
-systemctl stop squid
+systemctl stop squid > /dev/null 2>&1
 # Disable Squid service
-systemctl disable squid
+systemctl disable squid > /dev/null 2>&1
 # Remove Squid package
-apt remove --purge squid -y
+apt remove --purge squid -y > /dev/null 2>&1
 # Remove Squid configuration directory
 rm -rf /etc/squid > /dev/null 2>&1
 
