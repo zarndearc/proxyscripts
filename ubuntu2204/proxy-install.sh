@@ -35,12 +35,12 @@ fi
 # Check if Squid Proxy is already installed
 if [[ -d /etc/squid/ || -d /etc/squid3/ ]]; then
     read -p "Squid Proxy is already installed. Do you want to uninstall the existing installation? (yes/no): " uninstall_choice
-    case $uninstall_choice in
-        yes|Yes|YES|y|Y)
+    case $(echo "$uninstall_choice" | tr '[:upper:]' '[:lower:]') in
+        yes|y)
             echo "Uninstalling the existing Squid Proxy installation..."
             /usr/local/bin/squid-uninstall
             ;;
-        no|No|NO|n|N)
+        no|n)
             echo "Exiting installation. You can manually uninstall the existing Squid Proxy installation or run this script again after uninstalling."
             exit 1
             ;;
@@ -50,6 +50,7 @@ if [[ -d /etc/squid/ || -d /etc/squid3/ ]]; then
             ;;
     esac
 fi
+
 
 
 # Installation
