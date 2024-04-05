@@ -36,8 +36,9 @@ server_ip=$(hostname -I | cut -d' ' -f1)
 htpasswd -b /etc/squid/passwd "$username" "$password"
 echo "User $username added to Squid Proxy on port $port"
 
-# Update Squid configuration file with selected port
-sed -i "s/http_port 3128/http_port $port/" /etc/squid/squid.conf
+
+sed -i "s/http_port [0-9]\+/http_port $port/" /etc/squid/squid.conf
+
 
 # Update iptables rules with selected port
 if [ -f /sbin/iptables ]; then
