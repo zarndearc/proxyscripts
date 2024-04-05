@@ -34,39 +34,26 @@ fi
 echo 'ok2'
 
 # Check if Squid Proxy is already installed
+# Check if Squid Proxy is already installed
 if command -v squid >/dev/null 2>&1 || [ -x /usr/sbin/squid ]; then
-    echo 'ok3'
+    echo 'ok3
+    echo 'Squid Proxy is already installed. Removing existing installation...'
 
-    read -p "Squid Proxy is already installed. Do you want to uninstall the existing installation? (yes/no): " uninstall_choice
-    echo "Uninstall choice entered: $uninstall_choice"  # Debug message
-    case $(echo "$uninstall_choice" | tr '[:upper:]' '[:lower:]') in
-        yes|y)
-            echo "Uninstalling the existing Squid Proxy installation..."
+    # Stop the Squid service
+    systemctl stop squid
 
-            # Stop the Squid service
-            systemctl stop squid
+    # Disable Squid service to prevent it from starting on boot
+    systemctl disable squid
 
-            # Disable Squid service to prevent it from starting on boot
-            systemctl disable squid
+    # Remove Squid package
+    apt remove --purge squid -y
 
-            # Remove Squid package
-            apt remove --purge squid -y
+    # Remove Squid configuration directory
+    rm -rf /etc/squid
 
-            # Remove Squid configuration directory
-            rm -rf /etc/squid
-
-            echo "Squid Proxy uninstalled successfully."
-            ;;
-        no|n)
-            echo "Exiting installation. You can manually uninstall the existing Squid Proxy installation or run this script again after uninstalling."
-            exit 1
-            ;;
-        *)
-            echo "Invalid choice. Exiting installation."
-            exit 1
-            ;;
-    esac
+    echo "Squid Proxy uninstalled successfully."
 fi
+
 echo 'ok4'
 
 
