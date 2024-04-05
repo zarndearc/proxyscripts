@@ -38,6 +38,7 @@ if command -v squid >/dev/null 2>&1 || [ -x /usr/sbin/squid ]; then
     echo 'ok3'
 
     read -p "Squid Proxy is already installed. Do you want to uninstall the existing installation? (yes/no): " uninstall_choice
+    echo "Uninstall choice entered: $uninstall_choice"  # Debug message
     case $(echo "$uninstall_choice" | tr '[:upper:]' '[:lower:]') in
         yes|y)
             echo "Uninstalling the existing Squid Proxy installation..."
@@ -68,7 +69,6 @@ if command -v squid >/dev/null 2>&1 || [ -x /usr/sbin/squid ]; then
 fi
 echo 'ok4'
 
-echo 'ok4'
 
 
 
