@@ -36,7 +36,7 @@ echo 'ok2'
 # Check if Squid Proxy is already installed
 # Check if Squid Proxy is already installed
 if command -v squid >/dev/null 2>&1 || [ -x /usr/sbin/squid ]; then
-    echo 'ok3
+    echo 'ok3'
     echo 'Squid Proxy is already installed. Removing existing installation...'
 
     # Stop the Squid service
