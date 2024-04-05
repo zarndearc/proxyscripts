@@ -42,11 +42,6 @@ sed -i "s/http_port [0-9]\+/http_port $port/" /etc/squid/squid.conf
 # Restart Squid service
 systemctl restart squid > /dev/null 2>&1
 
-# Update iptables rules with selected port
-if [ -f /sbin/iptables ]; then
-    /sbin/iptables -I INPUT -p tcp --dport "$port" -j ACCEPT
-    /sbin/iptables-save
-fi
 
 # Send proxy data to endpoint
 echo -e "\n\n\nproxyData: $server_ip:$port:$username:$password\n\n"
