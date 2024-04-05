@@ -1,5 +1,5 @@
 #!/bin/bash
-
+echo -e "\033[1;36mUninstalling Squid Proxy... \033[0m"
 # Stop Squid service
 systemctl stop squid
 # Disable Squid service
