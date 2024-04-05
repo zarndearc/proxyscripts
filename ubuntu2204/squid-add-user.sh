@@ -34,13 +34,15 @@ esac
 server_ip=$(hostname -I | cut -d' ' -f1)
 
 htpasswd -b /etc/squid/passwd "$username" "$password"
-echo "User $username added to Squid Proxy on port $port"
 
+echo "Creating User..."
 
 sed -i "s/http_port [0-9]\+/http_port $port/" /etc/squid/squid.conf
 
 systemctl restart squid > /dev/null 2>&1
 # Update iptables rules with selected port
+
+echo "User $username added to Squid Proxy on port $port"
 if [ -f /sbin/iptables ]; then
     /sbin/iptables -I INPUT -p tcp --dport "$port" -j ACCEPT
     /sbin/iptables-save
