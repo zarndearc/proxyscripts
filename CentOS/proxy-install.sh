@@ -54,9 +54,9 @@ if [ ! -x "$(command -v squid)" ]; then
     touch /etc/squid/blacklist.acl
 
     
-wget -q --no-check-certificate -O /usr/local/bin/squid-add-user https://raw.githubusercontent.com/zarndearc/proxyscripts/main/centos/squid-add-user.sh && chmod 755 /usr/local/bin/squid-add-user
+wget -q --no-check-certificate -O /usr/local/bin/squid-add-user https://raw.githubusercontent.com/zarndearc/proxyscripts/main/CentOS/squid-add-user.sh && chmod 755 /usr/local/bin/squid-add-user
 
-wget -q --no-check-certificate -O /usr/local/bin/squid-uninstall https://raw.githubusercontent.com/zarndearc/proxyscripts/main/centos/squid-uninstall.sh && chmod 755 /usr/local/bin/squid-uninstall
+wget -q --no-check-certificate -O /usr/local/bin/squid-uninstall https://raw.githubusercontent.com/zarndearc/proxyscripts/main/CentOS/squid-uninstall.sh && chmod 755 /usr/local/bin/squid-uninstall
 
 
     cat <<EOF > /etc/squid/squid.conf
