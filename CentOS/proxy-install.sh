@@ -3,26 +3,18 @@
 # Custom start text
 echo -e "\033[1;36m
 
-::;;;I;l;:::III;;IIIIIIIIIIIIIIIIIIIIIIIIIllllllllllllllll!!ll!!!!!!!!
-::;;IIiU&@@@ofl;;I;IIIIIIIIIIIIIIIIIIIIIIIIIIllllllllllllllll!!!!!!!!!
-:;;;:pB@@@@@@@%xI;;IIIIIIIIIIIIIIIIIIIIlIIlllllllllllllllll!!!!!!!!!!!
-;;;!8wZ%@@@@@@cdOIIIIIIIIIIIIIIIIIIllIIIIIllllIll!!llll!lll!!!!!!!!!l!
-;;:8ZlI!o@@@@#!_BQIIIIIII;llII;IIIllllll!llllIl!!!!lllll!!!!!l!!!!!!!!
-;Iq@0l;l;#@@@#l+@@?lIII;IIl!lII!!ll!ii!!!!iiii!!iiii!!l!iiii!!~!iii~ii
-;iB@Zl?;l!W@@#l~@@oIIIIIII*@C!l-@*l@@@@@(@@@@@Bt@@@&(!l!!@@+~m@k~~)@@i
-lX@@wl]&!lI8@ali@@$I;;IIIl*$$]l?$#i@$*oa}a*$@akf@Md$$l!iJ$$wi~B@f?%$fi
-I#@@pl?@&:liOvl!@@B/lIIIIl#$$Wi}$#i$$_~i!!]$Wi!t$b[$$lii8$$@+i|$@q$aii
-:B@Bdl-wQ#IIInI!@bBzl;IIIl#$o$Y1$#~$$LCY!!-$Wi!t$&M$O~i)$ob$j~~q@$@i!!
-^%Y/kliJJQq;I;II8I*vlI;IIl#$1@$t$#+$$$$%!!-$W!!t$$$@M_~*$r($8~i+%$ti!!
-;qII!I!YJUUnI;;IIl~-I;IIIl#$[)$@$#+$@?~il!-$M!!t@d?Q$o?$$88$$]i~M$?i!!
-;:;;;;lYUUUYt;;IIIII;IIIIl#@?!d$$#~$$+!I!l_$W!!/@d?j$Wm$$$$$$dii#@-i!!
-:;;;;;Ijrrjf|+I;;;IIIIIIIl#$_ll@$#!$$$@$i!_$W!!|$@B@@J%$?!!+@B~~M@-!!!
-:;;:;;I}mwqmZII;I;IIIII;IIOd~I!1d0Ibbddd!!~bZl!}dbkm([bm!!iiQd{iZd+!!!
-;:;;;;IIZqqpzllII;;IIII;IIllIlIl!lll!!l!II!!!ll!i!!!!!i!l!l!!il!ii!!!!
-:;;IYL0OqmmpqwZZY;;IIIIIIIIIIIIlIIllIlllllllllllllll!!ll!!ll!!!!!!!!!!
-:;;;!0wqpppdqqwvII;IIIIIIIIIIIIIIIIIIIlIlIlIlIlllllllll!llll!!!!!!!!!!
-:;;:;I[0pqpqpv!I;;;IIIIIIIIIIIIIIIIIIIIIlIlIIIlllllllllllll!l!l!!!!!!!
-::;;;;I;:l!I:III;;IIIIIIIIIIIIIIIIIIIIIIIIlllIlllllllllllll!ll!!!!!!!!
+#########++==+*#################################################################
+#####+           -*#############################################################
+###= +###=     -*#  *###########################################################
+##-  +#**##=   =*#   +########--=###=-+#-----==------=+----=####*=-+##=-=*#*=-=#
+#+   +#+ -##*=-+##    *#######   -*#- =#  =*****+  +**= -+: =##*-   +##= :=: =*#
+#- -:+#*==--######:== +#######  -  =- =#     =##*  *##=    :*#*= -=  *##+   +###
+#**####*=====+#######*########  +*-   =#  =#####*  *##= =*+  ==       *#*= =*###
+########+++++++###############  +##=  =#     =##*  *##=     := :+***=  **= =####
+#########=----+#################################################################
+#####+-----------=*#############################################################
+########*++++++#################################################################
+
 
 Website: https://netbay.in
 
