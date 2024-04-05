@@ -25,15 +25,18 @@ echo -e "\033[1;36m
 Website: https:netbay.in
 
 \033[0m"
-
+echo 'ok1'
 # Check if running as root
 if [ "$(id -u)" -ne 0 ]; then
     echo "Please run this script as root."
     exit 1
 fi
+echo 'ok2'
 
 # Check if Squid Proxy is already installed
 if [[ -d /etc/squid/ || -d /etc/squid3/ ]]; then
+    echo 'ok3'
+
     read -p "Squid Proxy is already installed. Do you want to uninstall the existing installation? (yes/no): " uninstall_choice
     case $(echo "$uninstall_choice" | tr '[:upper:]' '[:lower:]') in
         yes|y)
@@ -50,6 +53,7 @@ if [[ -d /etc/squid/ || -d /etc/squid3/ ]]; then
             ;;
     esac
 fi
+echo 'ok4'
 
 
 
