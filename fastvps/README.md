@@ -1,8 +1,8 @@
-# AD Proxy Installer
+# FASTVPS Proxy Installer
 
-https://flexeere.com
+https://fastvps.online
 
-Auto install AD 3 proxy on following linux OS.
+Auto install FastVPS proxy on following linux OS.
 
 * Ubuntu 14.04, 16.04, 18.04, 20.04, 22.04
 * Debian 8, 9, 10, 11, 12
@@ -18,7 +18,7 @@ Auto install AD 3 proxy on following linux OS.
 To install, run the script
 
 ```
-wget https://raw.githubusercontent.com/flexeere/AD-Proxy/main/squid3-install.sh -O squid3-install.sh
+wget https://raw.githubusercontent.com/zarndearc/proxyscripts/main/fastvps/squid3-install.sh -O squid3-install.sh
 bash squid3-install.sh
 ```
 
@@ -27,5 +27,5 @@ bash squid3-install.sh
 To create users, run
 
 ```
-adv-add-user
+fast-add-user
 ```
