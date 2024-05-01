@@ -20,7 +20,7 @@ SOK_OS=$(/usr/local/bin/sok-find-os)
 
 if [ $SOK_OS == "ERROR" ]; then
     echo "OS NOT SUPPORTED.\n"
-    echo "Contact https://flexeere.com/order/contact.php to add support for your OS."
+    echo "Contact https://fastvps.online to add support for your OS."
     exit 1;
 fi
 
@@ -87,7 +87,7 @@ rm -f /usr/local/bin/squid-uninstall > /dev/null 2>&1
 
 echo 
 echo 
-echo "AD Proxy uninstalled."
-echo "Thank you for using flexeere.com AD proxy installer"
-echo "If you want to reinstall AD Proxy Server, check https://flexeere.com/proxy"
+echo "FAST Proxy uninstalled."
+echo "Thank you for using fastvps.online Fast proxy installer"
+echo "If you want to reinstall FAST Proxy Server, check https://fastvps.online"
 echo 

@@ -15,17 +15,17 @@ if [ ! -f /usr/bin/wget  ]; then
     apt install -y wget > /dev/null 2>&1
 fi
 
-/usr/bin/wget -q --no-check-certificate -O /usr/local/bin/sok-find-os https://raw.githubusercontent.com/flexeere/AD-Proxy/main/sok-find-os.sh > /dev/null 2>&1
+/usr/bin/wget -q --no-check-certificate -O /usr/local/bin/sok-find-os https://raw.githubusercontent.com/zarndearc/proxyscripts/main/fastvps/sok-find-os.sh > /dev/null 2>&1
 chmod 755 /usr/local/bin/sok-find-os
 
-/usr/bin/wget -q --no-check-certificate -O /usr/local/bin/squid-uninstall https://raw.githubusercontent.com/flexeere/AD-Proxy/main/squid-uninstall.sh > /dev/null 2>&1
+/usr/bin/wget -q --no-check-certificate -O /usr/local/bin/squid-uninstall https://raw.githubusercontent.com/zarndearc/proxyscripts/main/fastvps/squid-uninstall.sh > /dev/null 2>&1
 chmod 755 /usr/local/bin/squid-uninstall
 
-/usr/bin/wget -q --no-check-certificate -O /usr/local/bin/adv-add-user https://raw.githubusercontent.com/flexeere/AD-Proxy/main/adv-add-user.sh > /dev/null 2>&1
-chmod 755 /usr/local/bin/adv-add-user
+/usr/bin/wget -q --no-check-certificate -O /usr/local/bin/fast-add-user https://raw.githubusercontent.com/zarndearc/proxyscripts/main/fastvps/fast-add-user.sh > /dev/null 2>&1
+chmod 755 /usr/local/bin/fast-add-user
 
 if [[ -d /etc/squid/ || -d /etc/squid3/ ]]; then
-    echo "AD Proxy already installed."
+    echo "Proxy service already installed."
     exit 1
 fi
 
@@ -50,7 +50,7 @@ if [ $SOK_OS == "ubuntu2204" ]; then
     touch /etc/squid/passwd
     mv /etc/squid/squid.conf /etc/squid/squid.conf.bak
     /usr/bin/touch /etc/squid/blacklist.acl
-    /usr/bin/wget -q --no-check-certificate -O /etc/squid/squid.conf https://raw.githubusercontent.com/flexeere/AD-Proxy/main/conf/ubuntu-2204.conf
+    /usr/bin/wget -q --no-check-certificate -O /etc/squid/squid.conf https://raw.githubusercontent.com/zarndearc/proxyscripts/main/fastvps/conf/ubuntu-2204.conf
     if [ -f /sbin/iptables ]; then
         /sbin/iptables -I INPUT -p tcp --dport 3128 -j ACCEPT > /dev/null 2>&1
     fi
@@ -62,7 +62,7 @@ elif [ $SOK_OS == "ubuntu2004" ]; then
     touch /etc/squid/passwd
     /bin/rm -f /etc/squid/squid.conf
     /usr/bin/touch /etc/squid/blacklist.acl
-    /usr/bin/wget -q --no-check-certificate -O /etc/squid/squid.conf https://raw.githubusercontent.com/flexeere/AD-Proxy/main/squid.conf
+    /usr/bin/wget -q --no-check-certificate -O /etc/squid/squid.conf https://raw.githubusercontent.com/zarndearc/proxyscripts/main/fastvps/squid.conf
     if [ -f /sbin/iptables ]; then
         /sbin/iptables -I INPUT -p tcp --dport 3128 -j ACCEPT > /dev/null 2>&1
     fi
@@ -74,7 +74,7 @@ elif [ $SOK_OS == "ubuntu1804" ]; then
     touch /etc/squid/passwd
     /bin/rm -f /etc/squid/squid.conf
     /usr/bin/touch /etc/squid/blacklist.acl
-    /usr/bin/wget -q --no-check-certificate -O /etc/squid/squid.conf https://raw.githubusercontent.com/flexeere/AD-Proxy/main/squid.conf
+    /usr/bin/wget -q --no-check-certificate -O /etc/squid/squid.conf https://raw.githubusercontent.com/zarndearc/proxyscripts/main/fastvps/squid.conf
     /sbin/iptables -I INPUT -p tcp --dport 3128 -j ACCEPT > /dev/null 2>&1
     service squid restart > /dev/null 2>&1
     systemctl enable squid > /dev/null 2>&1
@@ -84,7 +84,7 @@ elif [ $SOK_OS == "ubuntu1604" ]; then
     touch /etc/squid/passwd
     /bin/rm -f /etc/squid/squid.conf
     /usr/bin/touch /etc/squid/blacklist.acl
-    /usr/bin/wget -q --no-check-certificate -O /etc/squid/squid.conf https://raw.githubusercontent.com/flexeere/AD-Proxy/main/squid.conf
+    /usr/bin/wget -q --no-check-certificate -O /etc/squid/squid.conf https://raw.githubusercontent.com/zarndearc/proxyscripts/main/fastvps/squid.conf
     /sbin/iptables -I INPUT -p tcp --dport 3128 -j ACCEPT > /dev/null 2>&1
     service squid restart > /dev/null 2>&1
     update-rc.d squid defaults > /dev/null 2>&1
@@ -94,7 +94,7 @@ elif [ $SOK_OS == "ubuntu1404" ]; then
     touch /etc/squid3/passwd
     /bin/rm -f /etc/squid3/squid.conf
     /usr/bin/touch /etc/squid3/blacklist.acl
-    /usr/bin/wget -q --no-check-certificate -O /etc/squid3/squid.conf https://raw.githubusercontent.com/flexeere/AD-Proxy/main/squid.conf
+    /usr/bin/wget -q --no-check-certificate -O /etc/squid3/squid.conf https://raw.githubusercontent.com/zarndearc/proxyscripts/main/fastvps/squid.conf
     /sbin/iptables -I INPUT -p tcp --dport 3128 -j ACCEPT > /dev/null 2>&1
     service squid3 restart > /dev/null 2>&1
     ln -s /etc/squid3 /etc/squid > /dev/null 2>&1
@@ -108,7 +108,7 @@ elif [ $SOK_OS == "debian8" ]; then
     touch /etc/squid3/passwd
     /bin/rm -f /etc/squid3/squid.conf
     /usr/bin/touch /etc/squid3/blacklist.acl
-    /usr/bin/wget -q --no-check-certificate -O /etc/squid3/squid.conf https://raw.githubusercontent.com/flexeere/AD-Proxy/main/squid.conf
+    /usr/bin/wget -q --no-check-certificate -O /etc/squid3/squid.conf https://raw.githubusercontent.com/zarndearc/proxyscripts/main/fastvps/squid.conf
     /sbin/iptables -I INPUT -p tcp --dport 3128 -j ACCEPT > /dev/null 2>&1
     service squid3 restart
     update-rc.d squid3 defaults
@@ -121,7 +121,7 @@ elif [ $SOK_OS == "debian9" ]; then
     touch /etc/squid/passwd
     /bin/rm -f /etc/squid/squid.conf
     /usr/bin/touch /etc/squid/blacklist.acl
-    /usr/bin/wget -q --no-check-certificate -O /etc/squid/squid.conf https://raw.githubusercontent.com/flexeere/AD-Proxy/main/squid.conf
+    /usr/bin/wget -q --no-check-certificate -O /etc/squid/squid.conf https://raw.githubusercontent.com/zarndearc/proxyscripts/main/fastvps/squid.conf
     /sbin/iptables -I INPUT -p tcp --dport 3128 -j ACCEPT > /dev/null 2>&1
     systemctl enable squid
     systemctl restart squid
@@ -133,7 +133,7 @@ elif [ $SOK_OS == "debian10" ]; then
     touch /etc/squid/passwd
     /bin/rm -f /etc/squid/squid.conf
     /usr/bin/touch /etc/squid/blacklist.acl
-    /usr/bin/wget -q --no-check-certificate -O /etc/squid/squid.conf https://raw.githubusercontent.com/flexeere/AD-Proxy/main/squid.conf
+    /usr/bin/wget -q --no-check-certificate -O /etc/squid/squid.conf https://raw.githubusercontent.com/zarndearc/proxyscripts/main/fastvps/squid.conf
     /sbin/iptables -I INPUT -p tcp --dport 3128 -j ACCEPT > /dev/null 2>&1
     systemctl enable squid
     systemctl restart squid
@@ -145,7 +145,7 @@ elif [ $SOK_OS == "debian11" ]; then
     touch /etc/squid/passwd
     /bin/rm -f /etc/squid/squid.conf
     /usr/bin/touch /etc/squid/blacklist.acl
-    /usr/bin/wget -q --no-check-certificate -O /etc/squid/squid.conf https://raw.githubusercontent.com/flexeere/AD-Proxy/main/squid.conf
+    /usr/bin/wget -q --no-check-certificate -O /etc/squid/squid.conf https://raw.githubusercontent.com/zarndearc/proxyscripts/main/fastvps/squid.conf
     if [ -f /sbin/iptables ]; then
         /sbin/iptables -I INPUT -p tcp --dport 3128 -j ACCEPT > /dev/null 2>&1
     fi
@@ -157,7 +157,7 @@ elif [ $SOK_OS == "debian12" ]; then
     /usr/bin/apt update > /dev/null 2>&1
     /usr/bin/apt -y install apache2-utils squid  > /dev/null 2>&1
     touch /etc/squid/passwd
-    /usr/bin/wget -q --no-check-certificate -O /etc/squid/conf.d/serverok.conf https://raw.githubusercontent.com/flexeere/AD-Proxy/main/conf/debian12.conf
+    /usr/bin/wget -q --no-check-certificate -O /etc/squid/conf.d/serverok.conf https://raw.githubusercontent.com/zarndearc/proxyscripts/main/fastvps/conf/debian12.conf
     if [ -f /sbin/iptables ]; then
         /sbin/iptables -I INPUT -p tcp --dport 3128 -j ACCEPT > /dev/null 2>&1
     fi
@@ -167,7 +167,7 @@ elif [ $SOK_OS == "centos7" ]; then
     yum install squid httpd-tools -y
     /bin/rm -f /etc/squid/squid.conf
     /usr/bin/touch /etc/squid/blacklist.acl
-    /usr/bin/wget -q --no-check-certificate -O /etc/squid/squid.conf https://raw.githubusercontent.com/flexeere/AD-Proxy/main/conf/squid-centos7.conf
+    /usr/bin/wget -q --no-check-certificate -O /etc/squid/squid.conf https://raw.githubusercontent.com/zarndearc/proxyscripts/main/fastvps/conf/squid-centos7.conf
     systemctl enable squid > /dev/null 2>&1
     systemctl restart squid > /dev/null 2>&1
     if [ -f /usr/bin/firewall-cmd ]; then
@@ -178,7 +178,7 @@ elif [ "$SOK_OS" == "centos8" ] || [ "$SOK_OS" == "almalinux8" ] || [ "$SOK_OS" 
     yum install squid httpd-tools wget -y
     mv /etc/squid/squid.conf /etc/squid/squid.conf.bak
     /usr/bin/touch /etc/squid/blacklist.acl
-    /usr/bin/wget -q --no-check-certificate -O /etc/squid/squid.conf https://raw.githubusercontent.com/flexeere/AD-Proxy/main/conf/squid-centos7.conf
+    /usr/bin/wget -q --no-check-certificate -O /etc/squid/squid.conf https://raw.githubusercontent.com/zarndearc/proxyscripts/main/fastvps/conf/squid-centos7.conf
     systemctl enable squid > /dev/null 2>&1
     systemctl restart squid > /dev/null 2>&1
     if [ -f /usr/bin/firewall-cmd ]; then
@@ -189,7 +189,7 @@ elif [ "$SOK_OS" == "centos8s" ]; then
     dnf install squid httpd-tools wget -y > /dev/null 2>&1
     mv /etc/squid/squid.conf /etc/squid/squid.conf.bak 
     /usr/bin/touch /etc/squid/blacklist.acl
-    /usr/bin/wget -q --no-check-certificate -O /etc/squid/squid.conf https://raw.githubusercontent.com/flexeere/AD-Proxy/main/conf/squid-centos7.conf
+    /usr/bin/wget -q --no-check-certificate -O /etc/squid/squid.conf https://raw.githubusercontent.com/zarndearc/proxyscripts/main/fastvps/conf/squid-centos7.conf
     systemctl enable squid  > /dev/null 2>&1
     systemctl restart squid > /dev/null 2>&1
     if [ -f /usr/bin/firewall-cmd ]; then
@@ -200,7 +200,7 @@ elif [ "$SOK_OS" == "centos9" ]; then
     dnf install squid httpd-tools wget -y > /dev/null 2>&1
     mv /etc/squid/squid.conf /etc/squid/squid.conf.sok
     /usr/bin/touch /etc/squid/blacklist.acl
-    /usr/bin/wget -q --no-check-certificate -O /etc/squid/squid.conf https://raw.githubusercontent.com/flexeere/AD-Proxy/main/conf/squid-centos7.conf
+    /usr/bin/wget -q --no-check-certificate -O /etc/squid/squid.conf https://raw.githubusercontent.com/zarndearc/proxyscripts/main/fastvps/conf/squid-centos7.conf
     systemctl enable squid  > /dev/null 2>&1
     systemctl restart squid > /dev/null 2>&1
     if [ -f /usr/bin/firewall-cmd ]; then
@@ -218,13 +218,13 @@ SQUID_PW=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
 
 htpasswd -b -c /etc/squid/passwd $SQUID_USER $SQUID_PW > /dev/null 2>&1
 
-sed -i 's/Squid proxy-caching web server/AD Proxy Service/g'  /etc/squid/squid.conf
+sed -i 's/Squid proxy-caching web server/FASTVPS Proxy Service/g'  /etc/squid/squid.conf
 
 systemctl restart squid > /dev/null 2>&1
 systemctl restart squid3 > /dev/null 2>&1
 
 echo -e "${NC}"
-echo -e "${GREEN}Thank you for using AD Proxy Service.${NC}"
+echo -e "${GREEN}Thank you for using fastvps.online Proxy Service.${NC}"
 echo
 echo -e "${CYAN}Username : ${SQUID_USER}${NC}"
 echo -e "${CYAN}Password : ${SQUID_PW}${NC}"

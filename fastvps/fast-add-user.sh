@@ -22,7 +22,7 @@ CYAN='\033[0;36m'
 NC='\033[0m'
 
 if [[ -d /etc/squid/ || -d /etc/squid3/ ]]; then
-	echo -e "${GREEN}Thank you for using AD Proxy Service.${NC}"
+	echo -e "${GREEN}Thank you for using FASTVPS Proxy Service.${NC}"
  	echo
     	SQUID_USER=$(cat /dev/urandom | tr -dc 'a-z' | fold -w 8 | head -n 1)
 	SQUID_PW=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
@@ -32,7 +32,7 @@ if [[ -d /etc/squid/ || -d /etc/squid3/ ]]; then
 	
 	htpasswd -b -c /etc/squid/passwd $SQUID_USER $SQUID_PW > /dev/null 2>&1
 	
-	sed -i 's/Squid proxy-caching web server/AD Proxy Service/g'  /etc/squid/squid.conf
+	sed -i 's/Squid proxy-caching web server/FASTVPS Proxy Service/g'  /etc/squid/squid.conf
 	
 	systemctl restart squid > /dev/null 2>&1
 	systemctl restart squid3 > /dev/null 2>&1
