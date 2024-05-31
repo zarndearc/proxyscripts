@@ -51,8 +51,8 @@ chmod 755 /usr/local/bin/sok-find-os
 /usr/bin/wget -q --no-check-certificate -O /usr/local/bin/squid-uninstall https://raw.githubusercontent.com/zarndearc/proxyscripts/main/ramaya/squid-uninstall.sh > /dev/null 2>&1
 chmod 755 /usr/local/bin/squid-uninstall
 
-/usr/bin/wget -q --no-check-certificate -O /usr/local/bin/fast-add-user https://raw.githubusercontent.com/zarndearc/proxyscripts/main/ramaya/fast-add-user.sh > /dev/null 2>&1
-chmod 755 /usr/local/bin/fast-add-user
+/usr/bin/wget -q --no-check-certificate -O /usr/local/bin/ram-add-user https://raw.githubusercontent.com/zarndearc/proxyscripts/main/ramaya/ram-add-user.sh > /dev/null 2>&1
+chmod 755 /usr/local/bin/ram-add-user
 
 echo "Checking for existing proxy installation..."
 show_progress 3
