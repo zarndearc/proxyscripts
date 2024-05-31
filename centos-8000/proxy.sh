@@ -18,5 +18,6 @@ sed -i 's/3128/8000/g' /etc/squid/squid.conf
 firewall-cmd --permanent --zone=public --add-port=8000/tcp
 firewall-cmd --reload
 
+
 # Restart Squid service
 systemctl restart squid
