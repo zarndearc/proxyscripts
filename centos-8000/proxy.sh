@@ -11,11 +11,11 @@ systemctl start firewalld
 wget https://raw.githubusercontent.com/serverok/squid-proxy-installer/master/squid3-install.sh
 bash squid3-install.sh
 
-# Change Squid proxy port to 5001
+# Change Squid proxy port to 8000
 sed -i 's/3128/8000/g' /etc/squid/squid.conf
 
-# Add firewall rule to allow traffic on port 5001
-firewall-cmd --permanent --zone=public --add-port=5001/tcp
+# Add firewall rule to allow traffic on port 8000
+firewall-cmd --permanent --zone=public --add-port=8000/tcp
 firewall-cmd --reload
 
 # Restart Squid service
