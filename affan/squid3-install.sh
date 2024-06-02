@@ -268,11 +268,14 @@ sed -i 's/Squid proxy-caching web server/AFFAN Proxy Service/g'  /etc/squid/squi
 systemctl restart squid > /dev/null 2>&1
 systemctl restart squid3 > /dev/null 2>&1
 
+
+server_ip=$(hostname -I | cut -d' ' -f1)
+
 echo -e "${NC}"
 echo -e "${GREEN}Thank you for using Affan Proxy Service.${NC}"
 echo
 echo -e "${CYAN}Username : ${SQUID_USER}${NC}"
 echo -e "${CYAN}Password : ${SQUID_PW}${NC}"
 echo -e "${CYAN}Port : ${SQUID_PORT}${NC}"
-echo -e "${CYAN}Proxy : ${SQUID_PORT}:${SQUID_USER}:${SQUID_PW}${NC}"
+echo -e "${CYAN}Proxy : ${server_ip}:${SQUID_PORT}:${SQUID_USER}:${SQUID_PW}${NC}"
 echo -e "${NC}"
