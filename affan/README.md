@@ -1,6 +1,5 @@
 # AFFAN Proxy Installer
 
-
 Auto install AFFAN proxy on following linux OS.
 
 * Ubuntu 14.04, 16.04, 18.04, 20.04, 22.04
@@ -12,7 +11,7 @@ Auto install AFFAN proxy on following linux OS.
 * Port : Custom
 
 
-## Install AD
+## Install AFFAN Proxy
 
 To install, run the script
 
