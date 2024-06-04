@@ -132,8 +132,8 @@ echo -e "${GREEN}Thank you for using Affan Proxy Service.${NC}"
 echo
 echo -e "${CYAN}Username : ${SQUID_USER}${NC}"
 echo -e "${CYAN}Password : ${SQUID_PW}${NC}"
-echo -e "${CYAN}Port : ${SQUID_PORT}${NC}"
-echo -e "${CYAN}Proxy : ${server_ip}:${SQUID_PORT}:${SQUID_USER}:${SQUID_PW}${NC}"
+echo -e "${CYAN}Port : 3128${NC}"
+echo -e "${CYAN}Proxy : ${server_ip}:3128:${SQUID_USER}:${SQUID_PW}${NC}"
 echo -e "${NC}"
 
 echo -e "\033[1;36mThank you for using Netbay Proxy installer.\033[0m"
