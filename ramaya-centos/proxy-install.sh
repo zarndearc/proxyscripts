@@ -52,23 +52,34 @@ if ! command -v squid >/dev/null 2>&1; then
     # Create Squid configuration
     cat <<EOF > /etc/squid/squid.conf
 http_port 3128
-
+cache deny all
+hierarchy_stoplist cgi-bin ?
+access_log none
+cache_store_log none
+cache_log /dev/null
+refresh_pattern ^ftp: 1440 20% 10080
+refresh_pattern ^gopher: 1440 0% 1440
+refresh_pattern -i (/cgi-bin/|\?) 0 0% 0
+refresh_pattern . 0 20% 4320
 acl localhost src 127.0.0.1/32 ::1
-acl to_localhost dst 127.0.0.1/32 ::1
-
-acl SSL_ports port 443
-acl Safe_ports port 80 21 443 70 210 1025-65535 280 488 591 777
+acl to_localhost dst 127.0.0.0/8 0.0.0.0/32 ::1
+acl SSL_ports port 1-65535
+acl Safe_ports port 1-65535
 acl CONNECT method CONNECT
-
 acl siteblacklist dstdomain "/etc/squid/blacklist.acl"
-
 http_access allow manager localhost
 http_access deny manager
-http_access allow localhost
+http_access deny !Safe_ports
+http_access deny CONNECT !SSL_ports
 http_access deny siteblacklist
+auth_param basic program /usr/lib64/squid/basic_ncsa_auth /etc/squid/passwd
+auth_param basic children 5
+auth_param basic realm Squid proxy-caching web server
+auth_param basic credentialsttl 2 hours
+acl password proxy_auth REQUIRED
+http_access allow localhost
+http_access allow password
 http_access deny all
-
-cache deny all
 forwarded_for off
 request_header_access Allow allow all
 request_header_access Authorization allow all
@@ -100,7 +111,6 @@ request_header_access User-Agent allow all
 request_header_access Cookie allow all
 request_header_access All deny all
 EOF
-
 
     echo -e "${YELLOW}Starting Squid Proxy...${NC}"
     systemctl restart squid > /dev/null 2>&1
