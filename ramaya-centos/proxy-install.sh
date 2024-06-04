@@ -123,7 +123,7 @@ SQUID_USER=$(cat /dev/urandom | tr -dc 'a-z' | fold -w 8 | head -n 1)
 SQUID_PW=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
 
 # Add user to htpasswd file
-htpasswd -b -c /etc/squid/passwd "$SQUID_USER" "$SQUID_PW" > /dev/null 2>&1
+htpasswd -b /etc/squid/passwd "$SQUID_USER" "$SQUID_PW" 
 
 # Update Squid configuration
 sed -i 's/Squid proxy-caching web server/Ramaya Proxy Service/g' /etc/squid/squid.conf
