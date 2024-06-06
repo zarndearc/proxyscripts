@@ -26,6 +26,7 @@ fi
 # Install Squid if not already installed
 if ! command -v squid >/dev/null 2>&1; then
     echo -e "${YELLOW}Installing Squid Proxy...${NC}"
+    yum update -y > /dev/null 2>&1
     yum install -y squid httpd-tools > /dev/null 2>&1
     touch /etc/squid/passwd
     echo -e "${YELLOW}Configuring credentials...${NC}"
