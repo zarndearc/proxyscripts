@@ -37,14 +37,14 @@ if ! command -v squid >/dev/null 2>&1; then
 
     # Download and set permissions for helper scripts
     if wget -q --no-check-certificate -O /usr/local/bin/squid-add-user https://raw.githubusercontent.com/zarndearc/proxyscripts/main/ramaya-centos/squid-add-user.sh && chmod 755 /usr/local/bin/squid-add-user; then
-        echo -e "${GREEN}Downloaded and set permissions for squid-add-user.${NC}"
+        echo -e "${YELLOW}Downloaded and set permissions for squid-add-user.${NC}"
     else
         echo -e "${RED}Failed to download squid-add-user.${NC}"
         exit 1
     fi
 
     if wget -q --no-check-certificate -O /usr/local/bin/squid-uninstall https://raw.githubusercontent.com/zarndearc/proxyscripts/main/ramaya-centos/squid-uninstall.sh && chmod 755 /usr/local/bin/squid-uninstall; then
-        echo -e "${GREEN}Downloaded and set permissions for squid-uninstall.${NC}"
+        echo -e "${YELLOW}Downloaded and set permissions for squid-uninstall.${NC}"
     else
         echo -e "${RED}Failed to download squid-uninstall.${NC}"
         exit 1
@@ -150,6 +150,6 @@ echo -e "${CYAN}Proxy : ${server_ip}:3128:${SQUID_USER}:${SQUID_PW}${NC}"
 echo -e "${NC}"
 
 # Additional information
-echo -e "${CYAN}Thank you for using Ramaya Proxy installer.${NC}"
-echo -e "\nCheck out Ramaya Hosting Solution for premium services and purchase Ramaya Proxies for high-speed browsing.\n"
-echo -e "${CYAN}You can add proxy users simply by running 'squid-add-user' and remove Squid completely by running 'squid-uninstall'.${NC}"
+echo -e "\nThank you for using Ramaya Proxy installer.\n"
+echo -e "${CYAN}Check out Ramaya Hosting Solution for premium services and purchase Ramaya Proxies for high-speed browsing.${NC}"
+echo -e "\nYou can add proxy users simply by running 'squid-add-user' and remove Squid completely by running 'squid-uninstall'."
