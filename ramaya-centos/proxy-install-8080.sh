@@ -146,7 +146,7 @@ echo
 echo -e "${CYAN}Username : ${SQUID_USER}${NC}"
 echo -e "${CYAN}Password : ${SQUID_PW}${NC}"
 echo -e "${CYAN}Port : 8080${NC}"
-echo -e "${CYAN}Proxy : ${server_ip}:3128:${SQUID_USER}:${SQUID_PW}${NC}"
+echo -e "${CYAN}Proxy : ${server_ip}:8080:${SQUID_USER}:${SQUID_PW}${NC}"
 echo -e "${NC}"
 
 # Additional information
