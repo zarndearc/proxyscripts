@@ -136,8 +136,8 @@ sed -i 's/Squid proxy-caching web server/Ramaya Proxy Service/g' /etc/squid/squi
 # Restart Squid service
 systemctl restart squid > /dev/null 2>&1
 
-# Allow traffic on port 3128
-firewall-cmd --permanent --add-port=3128/tcp
+# Allow traffic on port 8000
+firewall-cmd --permanent --add-port=8000/tcp
 firewall-cmd --reload
 
 # Get server IP address
