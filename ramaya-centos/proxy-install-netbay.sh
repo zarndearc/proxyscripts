@@ -145,7 +145,7 @@ server_ip=$(hostname -I | cut -d' ' -f1)
 
 # Display the details to the user
 echo -e "${NC}"
-echo -e "${GREEN}Thank you for using Ramaya Proxy Service.${NC}"
+echo -e "${GREEN}Thank you for using Netbay Proxy Service.${NC}"
 echo
 echo -e "${CYAN}Username : ${SQUID_USER}${NC}"
 echo -e "${CYAN}Password : ${SQUID_PW}${NC}"
@@ -154,6 +154,6 @@ echo -e "${CYAN}Proxy : ${server_ip}:3128:${SQUID_USER}:${SQUID_PW}${NC}"
 echo -e "${NC}"
 
 # Additional information
-echo -e "\nThank you for using Ramaya Proxy installer.\n"
-echo -e "${CYAN}Check out Ramaya Hosting Solution for premium services and purchase Ramaya Proxies for high-speed browsing.${NC}"
+echo -e "\nThank you for using Netbay Proxy installer.\n"
+echo -e "${CYAN}Check out Netbay Hosting Solution for premium services and purchase Ramaya Proxies for high-speed browsing.${NC}"
 echo -e "\nYou can add proxy users simply by running 'squid-add-user' and remove Squid completely by running 'squid-uninstall'."
