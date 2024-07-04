@@ -7,6 +7,8 @@ SECRET_KEY=$(openssl rand -base64 32)
 HOSTNAME=$(hostname -I | awk '{print $1}')
 WORK_DIR="/opt/$SERVICE_NAME"
 SERVICE_FILE="/etc/systemd/system/$SERVICE_NAME.service"
+FIREWALLD_SERVICE_FILE="/usr/lib/firewalld/services/$SERVICE_NAME.xml"
+UFW_RULE_FILE="/etc/ufw/applications.d/$SERVICE_NAME"
 
 # Function to create the Flask application
 create_flask_app() {
@@ -125,12 +127,15 @@ else
 
   # Update and install necessary packages
   if [ -x "$(command -v dnf)" ]; then
-      sudo dnf install -y python3 python3-pip
+      sudo dnf install -y python3 python3-pip firewalld
+      sudo systemctl enable --now firewalld
   elif [ -x "$(command -v yum)" ]; then
       sudo yum install -y epel-release
-      sudo yum install -y python3 python3-pip
+      sudo yum install -y python3 python3-pip firewalld
+      sudo systemctl enable --now firewalld
   elif [ -x "$(command -v apt)" ]; then
-      sudo apt update && sudo apt install -y python3 python3-pip
+      sudo apt update && sudo apt install -y python3 python3-pip ufw
+      sudo ufw --force enable
   fi
 
   # Install Flask, psutil, and distro library
@@ -161,6 +166,36 @@ SyslogIdentifier=$SERVICE_NAME
 [Install]
 WantedBy=multi-user.target
 EOF
+
+  # Create the firewalld service definition file (for RHEL)
+  if [ -n "$FIREWALLD_SERVICE_FILE" ]; then
+    cat <<EOF | sudo tee $FIREWALLD_SERVICE_FILE > /dev/null
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>$SERVICE_NAME</short>
+  <description>$SERVICE_NAME Service</description>
+  <port protocol="tcp" port="$PORT"/>
+</service>
+EOF
+
+    # Reload firewalld and add the service to the public zone
+    sudo firewall-cmd --reload
+    sudo firewall-cmd --zone=public --add-service=$SERVICE_NAME --permanent
+  fi
+
+  # Create the ufw application definition file (for Debian/Ubuntu)
+  if [ -n "$UFW_RULE_FILE" ]; then
+    cat <<EOF | sudo tee $UFW_RULE_FILE > /dev/null
+[$SERVICE_NAME]
+title=$SERVICE_NAME
+description=$SERVICE_NAME Service
+ports=$PORT/tcp
+EOF
+
+    # Reload ufw and allow the service
+    sudo ufw reload
+    sudo ufw allow $PORT/tcp
+  fi
 
   # Reload systemd, enable and start the service
   sudo systemctl daemon-reload
