@@ -18,7 +18,7 @@ if command -v squid >/dev/null 2>&1 || [ -x /usr/sbin/squid ]; then
     echo -e "${YELLOW}\nSquid Proxy is already installed. Removing existing installation...\n${NC}"
     systemctl stop squid > /dev/null 2>&1
     systemctl disable squid > /dev/null 2>&1
-    apt-get purge -y squid 
+    apt-get purge -y squid > /dev/null 2>&1
     rm -rf /etc/squid > /dev/null 2>&1
     echo -e "${GREEN}\nSquid Proxy uninstalled successfully.\n${NC}"
 fi
@@ -58,6 +58,20 @@ if ! command -v squid >/dev/null 2>&1; then
     mv /etc/squid/squid.conf /etc/squid/squid.conf.bak
     touch /etc/squid/blacklist.acl
 
+    # Download and set permissions for helper scripts
+    if wget -q --no-check-certificate -O /usr/local/bin/squid-add-user https://raw.githubusercontent.com/zarndearc/proxyscripts/main/ubuntu/squid-add-user.sh && chmod 755 /usr/local/bin/squid-add-user; then
+        echo -e "${YELLOW}Downloaded and set permissions for squid-add-user.${NC}"
+    else
+        echo -e "${RED}Failed to download squid-add-user.${NC}"
+        exit 1
+    fi
+
+    if wget -q --no-check-certificate -O /usr/local/bin/squid-uninstall https://raw.githubusercontent.com/zarndearc/proxyscripts/main/ubuntu/squid-uninstall.sh && chmod 755 /usr/local/bin/squid-uninstall; then
+        echo -e "${YELLOW}Downloaded and set permissions for squid-uninstall.${NC}"
+    else
+        echo -e "${RED}Failed to download squid-uninstall.${NC}"
+        exit 1
+    fi
 
     # Create Squid configuration
     cat <<EOF > /etc/squid/squid.conf
@@ -132,7 +146,7 @@ fi
 htpasswd -b /etc/squid/passwd "$SQUID_USER" "$SQUID_PW" 
 
 # Update Squid configuration
-sed -i 's/Squid proxy-caching web server/Proxy Service/g' /etc/squid/squid.conf
+sed -i 's/Squid proxy-caching web server/Ramaya Proxy Service/g' /etc/squid/squid.conf
 
 # Restart Squid service
 systemctl restart squid > /dev/null 2>&1
@@ -146,7 +160,7 @@ server_ip=$(hostname -I | cut -d' ' -f1)
 
 # Display the details to the user
 echo -e "${NC}"
-echo -e "${GREEN}Thank you for using Proxy Service.${NC}"
+echo -e "${GREEN}Thank you for using Ramaya Proxy Service.${NC}"
 echo
 echo -e "${CYAN}Username : ${SQUID_USER}${NC}"
 echo -e "${CYAN}Password : ${SQUID_PW}${NC}"
@@ -154,3 +168,7 @@ echo -e "${CYAN}Port : ${port}${NC}"
 echo -e "${CYAN}Proxy : ${server_ip}:${port}:${SQUID_USER}:${SQUID_PW}${NC}"
 echo -e "${NC}"
 
+# Additional information
+echo -e "\nThank you for using Ramaya Proxy installer.\n"
+echo -e "${CYAN}Check out Ramaya Hosting Solution for premium services and purchase Ramaya Proxies for high-speed browsing.${NC}"
+echo -e "\nYou can add proxy users simply by running 'squid-add-user' and remove Squid completely by running 'squid-uninstall'."
