@@ -18,7 +18,7 @@ if command -v squid >/dev/null 2>&1 || [ -x /usr/sbin/squid ]; then
     echo -e "${YELLOW}\nSquid Proxy is already installed. Removing existing installation...\n${NC}"
     systemctl stop squid > /dev/null 2>&1
     systemctl disable squid > /dev/null 2>&1
-    apt-get purge -y squid > /dev/null 2>&1
+    apt-get purge -y squid 
     rm -rf /etc/squid > /dev/null 2>&1
     echo -e "${GREEN}\nSquid Proxy uninstalled successfully.\n${NC}"
 fi
