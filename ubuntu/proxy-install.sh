@@ -32,6 +32,9 @@ echo "4) 8000"
 echo "5) 8080"
 read -p "Enter your choice [1-5]: " port_choice
 
+# Debug: Show what user entered
+echo "User entered: $port_choice"
+
 case $port_choice in
     1) port=3128 ;;
     2) port=5000 ;;
@@ -45,6 +48,10 @@ esac
 read -p "Enter username: " SQUID_USER
 read -sp "Enter password: " SQUID_PW
 echo
+
+# Debug: Show what user entered for username and password
+echo "Username entered: $SQUID_USER"
+echo "Password entered: (hidden)"
 
 # Install Squid if not already installed
 if ! command -v squid >/dev/null 2>&1; then
