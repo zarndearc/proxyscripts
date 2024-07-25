@@ -246,14 +246,17 @@ esac
 
 # Common steps for all installations
 if [ -f /sbin/iptables ]; then
+    echo "Iptables setup"
     /sbin/iptables -I INPUT -p tcp --dport 3128 -j ACCEPT > /dev/null 2>&1
 fi
+
+echo "Restaring"
 show_progress 2
 service squid restart > /dev/null 2>&1
+echo "Configuring Files"
 show_progress 2
 systemctl enable squid > /dev/null 2>&1
 show_progress 2
-
 
 
 sed -i 's/Squid proxy-caching web server/Ramaya Proxy Service/g' /etc/squid/squid.conf
