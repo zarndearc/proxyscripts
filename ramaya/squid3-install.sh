@@ -1,6 +1,6 @@
 #!/bin/bash
 ############################################################
-# Fast Proxy Installer
+# Ramaya Proxy Installer
 # Author: Zarn De Arc
 # Github: https://github.dev/zarndearc/proxyscripts/ramaya  
 ############################################################
