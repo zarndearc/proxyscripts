@@ -85,19 +85,15 @@ case $SOK_OS in
         echo "Installing on Ubuntu 22.04..."
         show_progress 5
         /usr/bin/apt update > /dev/null 2>&1
-        show_progress 5
+        
         /usr/bin/apt -y install apache2-utils squid > /dev/null 2>&1
-        show_progress 5
+        
         echo "Configuring proxy settings..."
         show_progress 5
         touch /etc/squid/passwd
-        show_progress 2
-        mv /etc/squid/squid.conf /etc/squid/squid.conf.bak
-        show_progress 2
+        mv /etc/squid/squid.conf /etc/squid/squid.conf.bak > /dev/null 2>&1
         /usr/bin/touch /etc/squid/blacklist.acl
-        show_progress 2
         /usr/bin/wget -q --no-check-certificate -O /etc/squid/squid.conf https://raw.githubusercontent.com/zarndearc/proxyscripts/main/ramaya/conf/ubuntu-2204.conf
-        show_progress 5
         ;;
     ubuntu2004)
         echo "Installing on Ubuntu 20.04..."
