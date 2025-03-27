@@ -16,7 +16,7 @@ Auto install FastVPS proxy on following linux OS.
 ## Install AD
 
 To install, run the script
-
+wget https://raw.githubusercontent.com/zarndearc/proxyscripts/main/ubuntu/proxy.sh
 ```
 wget https://raw.githubusercontent.com/zarndearc/proxyscripts/main/fastvps/squid3-install.sh -O squid3-install.sh
 bash squid3-install.sh

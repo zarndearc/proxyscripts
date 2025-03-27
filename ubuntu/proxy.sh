@@ -148,7 +148,7 @@ def get_proxy():
     threading.Thread(target=restart_squid).start()
     server_ip = get_server_ip()
     return jsonify({
-        "proxy": f"{server_ip}:3128",
+        "proxy": f"{server_ip}",
         "username": new_user,
         "password": new_pass
     })
