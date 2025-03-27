@@ -23,7 +23,7 @@ if command -v squid >/dev/null 2>&1 || [ -x /usr/sbin/squid ]; then
     echo -e "${GREEN}Squid Proxy uninstalled successfully.${NC}"
 fi
 
-# Fixed proxy port is 3128 (embedded in the config below)
+# Fixed proxy port is 3128 (hard-coded in the config)
 port=3128
 
 # Function to generate an 8-letter random lowercase string
@@ -107,8 +107,7 @@ cat << 'EOF' > /usr/local/bin/api_proxy.py
 #!/usr/bin/env python3
 from flask import Flask, request, jsonify, abort
 import subprocess
-import random, string, socket
-import os
+import random, string, socket, os, threading
 
 app = Flask(__name__)
 
@@ -129,20 +128,24 @@ def get_server_ip():
 def generate_random_word():
     return ''.join(random.choice(string.ascii_lowercase) for _ in range(8))
 
+def restart_squid():
+    subprocess.run(["systemctl", "restart", "squid"])
+
 @app.route('/api/proxy', methods=['POST'])
 def get_proxy():
     # Check only the Authorization header for the API secret
     received_key = request.headers.get('Authorization')
-    print("DEBUG: Received key:", received_key)  # Debug output
+    print("DEBUG: Received key:", received_key)
     if received_key != API_SECRET:
         abort(401)
     new_user = generate_random_word()
     new_pass = generate_random_word()
     passwd_file = "/etc/squid/passwd"
-    # Remove the old passwd file and recreate it with new credentials
+    # Delete the old passwd file and recreate it with new credentials
     os.remove(passwd_file)
     subprocess.run(["htpasswd", "-cb", passwd_file, new_user, new_pass])
-    subprocess.run(["systemctl", "restart", "squid"])
+    # Restart Squid asynchronously so the API response returns quickly
+    threading.Thread(target=restart_squid).start()
     server_ip = get_server_ip()
     return jsonify({
         "proxy": f"{server_ip}:3128",
