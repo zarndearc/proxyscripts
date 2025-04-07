@@ -16,6 +16,8 @@ import psutil
 import distro
 import subprocess
 import math
+import threading
+import time
 
 app = Flask(__name__)
 SECRET_KEY = "$SECRET_KEY"
@@ -104,11 +106,17 @@ def reboot():
     if not authenticate(request):
         return jsonify({"error": "Unauthorized"}), 401
     
-    try:
+    # Schedule the reboot to happen after the response is sent
+    def delayed_reboot():
+        time.sleep(1)  # Short delay to ensure response is sent
         subprocess.run(['sudo', 'reboot'], check=True)
-        return jsonify({"message": "Server is rebooting"})
-    except subprocess.CalledProcessError as e:
-        return jsonify({"error": str(e)}), 500
+    
+    # Start a background thread to handle the reboot
+    thread = threading.Thread(target=delayed_reboot)
+    thread.daemon = True
+    thread.start()
+    
+    return jsonify({"message": "Server is rebooting"})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=$PORT)
