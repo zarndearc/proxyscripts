@@ -172,10 +172,14 @@ def change_port():
     return jsonify({"message": f"Port changed to {new_port}"}), 200
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=16969)
 EOF
 
 chmod +x /usr/local/bin/api_proxy.py
+
+# Open port in firewall
+firewall-cmd --permanent --add-port=16969/tcp >/dev/null
+firewall-cmd --reload >/dev/null
 
 # Create systemd service
 cat << 'EOF' > /etc/systemd/system/api_proxy.service
