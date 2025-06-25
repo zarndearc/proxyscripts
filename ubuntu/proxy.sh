@@ -35,9 +35,8 @@ initial_user=$(generate_random_word)
 initial_pass=$(generate_random_word)
 
 # Install tools
-yum install -y epel-release >/dev/null
-yum install -y squid httpd-tools python3 >/dev/null
-pip3 install flask >/dev/null
+yum install -y squid httpd-tools python3 python3-pip
+pip3 install flask
 
 # Prepare config
 mkdir -p /etc/squid
