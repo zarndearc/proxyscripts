@@ -1,53 +1,53 @@
 #!/bin/bash
 
-# Define color codes for output
+# Colors
 GREEN='\033[0;32m'
 CYAN='\033[0;36m'
 RED='\033[0;31m'
 YELLOW='\033[1;33m'
-NC='\033[0m'  # No Color
+NC='\033[0m'
 
-# Check if running as root
+# Root check
 if [ "$(whoami)" != "root" ]; then
-    echo -e "${RED}ERROR: Run the script as root or use sudo.${NC}"
+    echo -e "${RED}ERROR: Run as root or use sudo.${NC}"
     exit 1
 fi
 
-# Remove any existing Squid installation
+# Remove old Squid
 if command -v squid >/dev/null 2>&1 || [ -x /usr/sbin/squid ]; then
-    echo -e "${YELLOW}Squid Proxy is already installed. Removing it...${NC}"
-    systemctl stop squid > /dev/null 2>&1
-    systemctl disable squid > /dev/null 2>&1
-    apt-get purge -y squid > /dev/null 2>&1
-    rm -rf /etc/squid > /dev/null 2>&1
-    echo -e "${GREEN}Squid Proxy uninstalled successfully.${NC}"
+    echo -e "${YELLOW}Squid is already installed. Removing...${NC}"
+    systemctl stop squid
+    systemctl disable squid
+    yum remove -y squid
+    rm -rf /etc/squid
+    echo -e "${GREEN}Removed old Squid.${NC}"
 fi
 
-# Fixed proxy port is 3128 (hard-coded in the config)
+# Default port
 port=3128
 
-# Function to generate an 8-letter random lowercase string
+# Random generator
 generate_random_word() {
     tr -dc 'a-z' </dev/urandom | head -c8
 }
 
-# Generate initial random credentials
 initial_user=$(generate_random_word)
 initial_pass=$(generate_random_word)
 
-# Install Squid and required packages
-echo -e "${YELLOW}Installing Squid Proxy...${NC}"
-apt-get update -y > /dev/null 2>&1
-apt-get install -y squid apache2-utils > /dev/null 2>&1
+# Install tools
+yum install -y epel-release >/dev/null
+yum install -y squid httpd-tools python3 >/dev/null
+pip3 install flask >/dev/null
 
-# Create Squid password file and backup existing config if any
+# Prepare config
+mkdir -p /etc/squid
 touch /etc/squid/passwd
 mv /etc/squid/squid.conf /etc/squid/squid.conf.bak 2>/dev/null
 touch /etc/squid/blacklist.acl
 
-# Create Squid configuration file with fixed port 3128
+generate_squid_conf() {
 cat <<EOF > /etc/squid/squid.conf
-http_port 3128
+http_port $port
 cache deny all
 hierarchy_stoplist cgi-bin ?
 access_log none
@@ -68,7 +68,7 @@ http_access deny manager
 http_access deny !Safe_ports
 http_access deny CONNECT !SSL_ports
 http_access deny siteblacklist
-auth_param basic program /usr/lib/squid/basic_ncsa_auth /etc/squid/passwd
+auth_param basic program /usr/lib64/squid/basic_ncsa_auth /etc/squid/passwd
 auth_param basic children 5
 auth_param basic realm Ramaya Proxy Service
 auth_param basic credentialsttl 2 hours
@@ -78,52 +78,53 @@ http_access allow password
 http_access deny all
 forwarded_for off
 EOF
+}
 
-# Start and enable Squid service
-systemctl restart squid > /dev/null 2>&1
-systemctl enable squid > /dev/null 2>&1
+generate_squid_conf
 
-# Add the initial random credentials to Squid's password file
+# Set credentials
 htpasswd -b /etc/squid/passwd "$initial_user" "$initial_pass"
 
-# Open port 3128 in UFW and reload firewall rules
-ufw allow 3128/tcp
-ufw reload
+# Start Squid
+systemctl enable squid
+systemctl restart squid
 
-# ---------------------------
-# Set Up API to Regenerate Dynamic Credentials
-# ---------------------------
-echo -e "${YELLOW}Setting up dynamic proxy API...${NC}"
+# Open port in firewall
+firewall-cmd --permanent --add-port=$port/tcp >/dev/null
+firewall-cmd --reload >/dev/null
 
-# Default API secret for Authorization header
+# Set up Flask API
 API_SECRET="Black@98345611"
-
-# Install Python3, pip, and Flask if not already installed
-apt-get install -y python3 python3-pip > /dev/null 2>&1
-pip3 install flask > /dev/null 2>&1
-
-# Create the Flask API script that regenerates credentials on POST requests
 cat << 'EOF' > /usr/local/bin/api_proxy.py
 #!/usr/bin/env python3
 from flask import Flask, request, jsonify, abort
-import subprocess
-import random, string, socket, os, threading
+import subprocess, random, string, socket, os, threading
 
 app = Flask(__name__)
-
-# Default API secret for Authorization header
 API_SECRET = "Black@98345611"
+passwd_file = "/etc/squid/passwd"
+conf_file = "/etc/squid/squid.conf"
 
 def get_server_ip():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
         s.connect(('10.255.255.255', 1))
         ip = s.getsockname()[0]
-    except Exception:
+    except:
         ip = '127.0.0.1'
     finally:
         s.close()
     return ip
+
+def get_series(ip):
+    return ".".join(ip.split(".")[0:2])
+
+def get_current_port():
+    with open(conf_file, 'r') as f:
+        for line in f:
+            if line.startswith("http_port"):
+                return line.strip().split()[1]
+    return "3128"
 
 def generate_random_word():
     return ''.join(random.choice(string.ascii_lowercase) for _ in range(8))
@@ -133,34 +134,51 @@ def restart_squid():
 
 @app.route('/api/proxy', methods=['POST'])
 def get_proxy():
-    # Check only the Authorization header for the API secret
-    received_key = request.headers.get('Authorization')
-    print("DEBUG: Received key:", received_key)
-    if received_key != API_SECRET:
+    if request.headers.get('Authorization') != API_SECRET:
         abort(401)
     new_user = generate_random_word()
     new_pass = generate_random_word()
-    passwd_file = "/etc/squid/passwd"
-    # Delete the old passwd file and recreate it with new credentials
     os.remove(passwd_file)
     subprocess.run(["htpasswd", "-cb", passwd_file, new_user, new_pass])
-    # Restart Squid asynchronously so the API response returns quickly
     threading.Thread(target=restart_squid).start()
-    server_ip = get_server_ip()
+    ip = get_server_ip()
     return jsonify({
-        "proxy": f"{server_ip}",
-        "username": new_user,
-        "password": new_pass
+        "ipseries": get_series(ip),
+        "ip": ip,
+        "port": get_current_port(),
+        "user": new_user,
+        "pass": new_pass
     })
+
+@app.route('/api/change-port', methods=['POST'])
+def change_port():
+    if request.headers.get('Authorization') != API_SECRET:
+        abort(401)
+    data = request.get_json()
+    if not data or 'port' not in data:
+        return jsonify({"error": "Missing 'port'"}), 400
+    new_port = str(data['port'])
+    # Update config
+    with open(conf_file, 'r') as f:
+        lines = f.readlines()
+    with open(conf_file, 'w') as f:
+        for line in lines:
+            if line.startswith("http_port"):
+                f.write(f"http_port {new_port}\n")
+            else:
+                f.write(line)
+    subprocess.run(["firewall-cmd", "--permanent", "--add-port=" + new_port + "/tcp"])
+    subprocess.run(["firewall-cmd", "--reload"])
+    threading.Thread(target=restart_squid).start()
+    return jsonify({"message": f"Port changed to {new_port}"}), 200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
 EOF
 
-# Make the API script executable
 chmod +x /usr/local/bin/api_proxy.py
 
-# Create a systemd service for the API
+# Create systemd service
 cat << 'EOF' > /etc/systemd/system/api_proxy.service
 [Unit]
 Description=Dynamic Proxy API Service
@@ -176,35 +194,29 @@ Environment=FLASK_ENV=production
 WantedBy=multi-user.target
 EOF
 
-# Reload systemd and start the API service
+# Start API
 systemctl daemon-reload
 systemctl enable api_proxy.service
 systemctl start api_proxy.service
 
-# ---------------------------
-# Final Output
-# ---------------------------
-server_ip=$(hostname -I | cut -d' ' -f1)
-
-# Send proxy details to n8n webhook
-webhook_url="https://n8n.technoconnect.io/webhook/7c938e2a-cbe4-48f2-9448-df41764358ae"
-authorization_header="Black@98345611"
+# Notify webhook
+server_ip=$(hostname -I | awk '{print $1}')
+series=$(echo "$server_ip" | cut -d'.' -f1,2)
+webhook_url="https://n8n.technoconnect.io/webhook-test/proxy-create"
+auth="Black@98345611"
 
 curl -X POST "$webhook_url" \
+     -H "Authorization: $auth" \
      -H "Content-Type: application/json" \
-     -H "Authorization: $authorization_header" \
      -d '{
-            "username": "'"$initial_user"'",
-            "password": "'"$initial_pass"'",
-            "proxy": "'"$server_ip"'"
-         }' > /dev/null 2>&1 &
+        "ipseries": "'"$series"'",
+        "ip": "'"$server_ip"'",
+        "port": "'"$port"'",
+        "user": "'"$initial_user"'",
+        "pass": "'"$initial_pass"'"
+     }' >/dev/null 2>&1 &
 
-echo
-echo -e "${CYAN}Initial Squid Credentials:${NC}"
-echo -e "${CYAN}Username: ${initial_user}${NC}"
-echo -e "${CYAN}Password: ${initial_pass}${NC}"
-echo -e "${CYAN}Proxy: ${server_ip}:3128:${initial_user}:${initial_pass}${NC}"
-echo -e "${GREEN}(Only these credentials are valid until the API generates new ones)${NC}"
-echo -e "${GREEN}Dynamic Proxy API is now running on port 5000.${NC}"
-echo -e "${CYAN}http://${server_ip}:5000/api/proxy${NC}"
-echo -e "\nEach successful API call will delete and recreate the credentials, disabling the previous ones."
+echo -e "${GREEN}Squid installed with API endpoints:${NC}"
+echo -e "${CYAN}Proxy: ${server_ip}:${port}:${initial_user}:${initial_pass}${NC}"
+echo -e "${CYAN}API: http://${server_ip}:5000/api/proxy${NC}"
+echo -e "${CYAN}Change port: http://${server_ip}:5000/api/change-port${NC}"
