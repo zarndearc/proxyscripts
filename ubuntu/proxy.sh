@@ -34,9 +34,13 @@ generate_random_word() {
 initial_user=$(generate_random_word)
 initial_pass=$(generate_random_word)
 
-# Install tools
-yum install -y squid httpd-tools python3 python3-pip
+# Install dependencies
+yum install -y squid httpd-tools python3 python3-pip firewalld
 pip3 install flask
+
+# Ensure firewall is running
+systemctl enable firewalld
+systemctl start firewalld
 
 # Prepare config
 mkdir -p /etc/squid
@@ -94,6 +98,7 @@ firewall-cmd --reload >/dev/null
 
 # Set up Flask API
 API_SECRET="Black@98345611"
+
 cat << 'EOF' > /usr/local/bin/api_proxy.py
 #!/usr/bin/env python3
 from flask import Flask, request, jsonify, abort
@@ -131,15 +136,18 @@ def generate_random_word():
 def restart_squid():
     subprocess.run(["systemctl", "restart", "squid"])
 
+def update_passwd_and_restart(user, password):
+    os.remove(passwd_file)
+    subprocess.run(["htpasswd", "-cb", passwd_file, user, password])
+    threading.Thread(target=restart_squid).start()
+
 @app.route('/api/proxy', methods=['POST'])
 def get_proxy():
     if request.headers.get('Authorization') != API_SECRET:
         abort(401)
     new_user = generate_random_word()
     new_pass = generate_random_word()
-    os.remove(passwd_file)
-    subprocess.run(["htpasswd", "-cb", passwd_file, new_user, new_pass])
-    threading.Thread(target=restart_squid).start()
+    update_passwd_and_restart(new_user, new_pass)
     ip = get_server_ip()
     return jsonify({
         "ipseries": get_series(ip),
@@ -157,7 +165,6 @@ def change_port():
     if not data or 'port' not in data:
         return jsonify({"error": "Missing 'port'"}), 400
     new_port = str(data['port'])
-    # Update config
     with open(conf_file, 'r') as f:
         lines = f.readlines()
     with open(conf_file, 'w') as f:
@@ -171,15 +178,42 @@ def change_port():
     threading.Thread(target=restart_squid).start()
     return jsonify({"message": f"Port changed to {new_port}"}), 200
 
+@app.route('/api/rebuild', methods=['POST'])
+def rebuild_proxy():
+    if request.headers.get('Authorization') != API_SECRET:
+        abort(401)
+    with open(conf_file, 'r') as f:
+        lines = f.readlines()
+    with open(conf_file, 'w') as f:
+        for line in lines:
+            if line.startswith("http_port"):
+                f.write("http_port 3128\n")
+            else:
+                f.write(line)
+    subprocess.run(["firewall-cmd", "--permanent", "--add-port=3128/tcp"])
+    subprocess.run(["firewall-cmd", "--reload"])
+    user = generate_random_word()
+    password = generate_random_word()
+    update_passwd_and_restart(user, password)
+    ip = get_server_ip()
+    return jsonify({
+        "message": "Proxy reset and credentials regenerated.",
+        "ipseries": get_series(ip),
+        "ip": ip,
+        "port": "3128",
+        "user": user,
+        "pass": password
+    })
+
+@app.route('/api/status', methods=['GET'])
+def check_status():
+    return jsonify({"status": "active"}), 200
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=16969)
 EOF
 
 chmod +x /usr/local/bin/api_proxy.py
-
-# Open port in firewall
-firewall-cmd --permanent --add-port=16969/tcp >/dev/null
-firewall-cmd --reload >/dev/null
 
 # Create systemd service
 cat << 'EOF' > /etc/systemd/system/api_proxy.service
@@ -197,12 +231,11 @@ Environment=FLASK_ENV=production
 WantedBy=multi-user.target
 EOF
 
-# Start API
 systemctl daemon-reload
 systemctl enable api_proxy.service
 systemctl start api_proxy.service
 
-# Notify webhook
+# Notify n8n webhook
 server_ip=$(hostname -I | awk '{print $1}')
 series=$(echo "$server_ip" | cut -d'.' -f1,2)
 webhook_url="https://n8n.technoconnect.io/webhook-test/proxy-create"
@@ -221,5 +254,7 @@ curl -X POST "$webhook_url" \
 
 echo -e "${GREEN}Squid installed with API endpoints:${NC}"
 echo -e "${CYAN}Proxy: ${server_ip}:${port}:${initial_user}:${initial_pass}${NC}"
-echo -e "${CYAN}API: http://${server_ip}:5000/api/proxy${NC}"
-echo -e "${CYAN}Change port: http://${server_ip}:5000/api/change-port${NC}"
+echo -e "${CYAN}API: http://${server_ip}:16969/api/proxy${NC}"
+echo -e "${CYAN}Change Port: http://${server_ip}:16969/api/change-port${NC}"
+echo -e "${CYAN}Rebuild: http://${server_ip}:16969/api/rebuild${NC}"
+echo -e "${CYAN}Status: http://${server_ip}:16969/api/status${NC}"
