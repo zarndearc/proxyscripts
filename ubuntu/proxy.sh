@@ -238,7 +238,7 @@ systemctl start api_proxy.service
 # Notify n8n webhook
 server_ip=$(hostname -I | awk '{print $1}')
 series=$(echo "$server_ip" | cut -d'.' -f1,2)
-webhook_url="https://n8n.technoconnect.io/webhook-test/proxy-create"
+webhook_url="https://netbay-toolkit.onrender.com/api/toolkit/onetime/register"
 auth="Black@98345611"
 
 curl -X POST "$webhook_url" \
