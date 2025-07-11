@@ -93,6 +93,7 @@ systemctl enable squid
 systemctl restart squid
 
 # Open port in firewall
+firewall-cmd --permanent --add-port=16969/tcp
 firewall-cmd --permanent --add-port=$port/tcp >/dev/null
 firewall-cmd --reload >/dev/null
 
